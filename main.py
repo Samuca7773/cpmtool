@@ -151,18 +151,26 @@ def menu():
             if service == '1':
                 account_email = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite seu email[/bold white] >> ")
                 account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
-                coins = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite a quantidade de coins[/bold white] >> ")
-                coins_int = int(coins)
-                if coins_int > 500000:
-                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Você não pode injetar coins acima de 500.000![/bold white]")
-                    sleep(2)
-                    menu()
                 try:
                     client = LoginCarParking(email=account_email, password=account_password)
+                    console.print(f" [[bold cyan]![/bold cyan]] [bold white]Quantidade de coins do usuário: [/bold white]{client.data_account.coin}")
                     login = True
+                   
                 except Exception as err:
                     console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {err}[/bold white]")
                     login = False
+                    sleep(2)
+                    menu()
+                
+                coins = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite a quantidade de coins que deseja >> [/bold white] >> ")
+                if not coins:
+                    console.print(" [[bold cyan]?[/bold cyan]] [bold white]Digite um número válido![/bold white]")
+                    sleep(2)
+                    menu()
+                    
+                coins_int = int(coins)
+                if coins_int > 500000:
+                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Você não pode injetar coins acima de 500.000![/bold white]")
                     sleep(2)
                     menu()
                 
@@ -193,20 +201,29 @@ def menu():
             elif service == '2':
                 account_email = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite seu email[/bold white] >> ")
                 account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
-                money = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite a quantidade de dinheiro[/bold white] >> ")
-                money_int = int(money)
-                if money_int > 50000000:
-                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Você não pode injetar dinheiro acima de 50.000.000![/bold white]")
-                    sleep(2)
-                    menu()
                 try:
                     client = LoginCarParking(email=account_email, password=account_password)
+                    console.print(f" [[bold cyan]![/bold cyan]] [bold white]Quantidade de coins do usuário: [/bold white]{client.data_account.money}")
                     login = True
+                   
                 except Exception as err:
                     console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {err}[/bold white]")
                     login = False
                     sleep(2)
                     menu()
+
+                money = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite a quantidade de dinheiro[/bold white] >> ")
+                if not money:
+                    console.print(" [[bold cyan]?[/bold cyan]] [bold white]Digite um número válido![/bold white]")
+                    sleep(2)
+                    menu()
+                    
+                money_int = int(money)
+                if money_int > 50000000:
+                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Você não pode injetar dinheiro acima de 50.000.000![/bold white]")
+                    sleep(2)
+                    menu()
+
                 
                 if login == True:
                     data = {
@@ -295,7 +312,7 @@ def menu():
                         menu()
                     elif response.status_code == 404:
                         console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel liberar as roupas![/bold white]")
-                        slee(2)
+                        sleep(2)
                         menu()
                     elif response.status_code == 403:
                         console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
@@ -332,7 +349,7 @@ def menu():
                         menu()
                     elif response.status_code == 404:
                         console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel liberar as animações![/bold white]")
-                        slee(2)
+                        sleep(2)
                         menu()
                     elif response.status_code == 403:
                         console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
@@ -340,6 +357,56 @@ def menu():
                         menu()
                     elif response.status_code == 500:
                         console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
+                        sleep(2)
+                        menu()
+            
+            # Deletar conta
+            elif service == "6":
+                account_email = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite seu email[/bold white] >> ")
+                account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
+                
+                try:
+                    client = LoginCarParking(email=account_email, password=account_password)
+                    login = True
+                except Exception as err:
+                    console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {err}[/bold white]")
+                    login = False
+                    sleep(2)
+                    menu()
+                
+                if login == True:
+                    data = {
+                        'account_username': account_username,
+                        'item': 'delete'
+                    }
+                    response = requests.post(f"{url}/buy_item", json=data)
+                    if response.status_code == 200:
+                        confirm = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite 'confirmar' para excluir a conta[/bold white] >> ")
+                        if confirm == 'confirmar':
+                            try:
+                                client.delete_account()
+                                console.print(" [[bold cyan]![/bold cyan]][bold white] Conta deletada![/bold white]")
+                                sleep(2)
+                                menu()
+                            except Exception as err:
+                                console.print(f" [[bold cyan]![/bold cyan]][bold white] Não foi possivel excluir a conta: {err}")
+                                sleep(2)
+                                menu()
+                        else:
+                            console.print(" [[bold cyan]![/bold cyan]][bold white] Você não confirmou a exclusão de conta![/bold white]")
+                            sleep(2)
+                            menu()
+                        
+                    elif response.status_code == 404:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel liberar as animações![/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response.status_code == 500:
+                        console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response.status_code == 403:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
                         sleep(2)
                         menu()
             else:
