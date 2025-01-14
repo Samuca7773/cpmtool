@@ -66,8 +66,6 @@ def login():
         console.print(" [[bold cyan]![/bold cyan]] [bold white]Nada pode ficar em branco![/bold white]")
         pause()
         start()
-    else:
-        pass
     
     data = {
         "account_username": account_username,
@@ -86,6 +84,7 @@ def login():
         start()
     elif response.status_code == 200:
         console.print(" [[bold cyan]![/bold cyan]] [bold white]Acesso liberado![/bold white]")
+        sleep(2)
         menu()
         
     elif response.status_code == 500:
@@ -127,22 +126,30 @@ def menu():
             account_username_info = data.get('account_username')
             account_balance = data.get('balance')
             console.print(f' [[bold cyan]![/bold cyan]] [bold white]Username[/bold white] > [bold cyan]{account_username_info}[/bold cyan]')
-            console.print(f' [[bold cyan]![/bold cyan]] [bold white]Dinheiro[/bold white] > [bold cyan]{account_balance}[/bold cyan]')
+            console.print(f" [[bold cyan]![/bold cyan]] [bold white]Dinheiro[/bold white] > [bold cyan]{account_balance}[/bold cyan]")
+            console.print(" [[bold cyan]![/bold cyan]] [bold white]Desenvolvido por[/bold white] > [bold cyan]t.me/Samuca_007[/bold cyan]")
             console.print("\n [bold white]Menu Principal: ")
            
             # Servicos de Car Parking
             
             # 1 - Injetar Coins
-            console.print(" [[bold cyan]01[/bold cyan]] [bold white]Injetar Coins               [/bold white] [200]")
+            console.print(" [[bold cyan]01[/bold cyan]] [bold white]Injetar Coins               [/bold white] [ 400 ]")
             # 2 - Injetar Dinheiro
-            console.print(" [[bold cyan]02[/bold cyan]] [bold white]Injetar Dinheiro            [/bold white] [200]")
+            console.print(" [[bold cyan]02[/bold cyan]] [bold white]Injetar Dinheiro            [/bold white] [ 400 ]")
             # 3 - Liberar Carros 
-            console.print(" [[bold cyan]03[/bold cyan]] [bold white]Liberar Todos Carros        [/bold white] [500]")
+            console.print(" [[bold cyan]03[/bold cyan]] [bold white]Liberar Todos Carros        [/bold white] [[bold cyan] 1K  [/bold cyan]]")
              # 4 - Liberar Roupas
-            console.print(" [[bold cyan]04[/bold cyan]] [bold white]Liberar Todas As Roupas     [/bold white] [300]")
+            console.print(" [[bold cyan]04[/bold cyan]] [bold white]Liberar Todas As Roupas     [/bold white] [ 300 ]")
              # 5 - Liberar animações 
-            console.print(" [[bold cyan]05[/bold cyan]] [bold white]Liberar Todas As Animações  [/bold white] [300]")
-            console.print(" [[bold cyan]06[/bold cyan]] [bold white]Excluir conta [/bold white]               [100]")
+            console.print(" [[bold cyan]05[/bold cyan]] [bold white]Liberar Todas As Animações  [/bold white] [ 300 ]")
+            # 6 - Excluir Conta
+            console.print(" [[bold cyan]06[/bold cyan]] [bold white]Excluir conta [/bold white]               [ 200 ]")
+            # 7 - Liberar Rodas
+            console.print(" [[bold cyan]07[/bold cyan]] [bold white]Desbloquear Rodas[/bold white]            [ 300 ]")
+            # 8 - Nome grande
+            console.print(" [[bold cyan]08[/bold cyan]] [bold white]Nome grande  [/bold white]                [ 300 ]")
+            # 9 - ID Personalizado
+            console.print(" [[bold cyan]09[/bold cyan]] [bold white]ID Personalizado[/bold white]             [ 500 ]")
             console.print("\n")
             service = console.input(' [[bold cyan]?[/bold cyan]] [bold white]Digite a opção desejada[/bold white] >> ')
             
@@ -203,7 +210,7 @@ def menu():
                 account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
                 try:
                     client = LoginCarParking(email=account_email, password=account_password)
-                    console.print(f" [[bold cyan]![/bold cyan]] [bold white]Quantidade de coins do usuário: [/bold white]{client.data_account.money}")
+                    console.print(f" [[bold cyan]![/bold cyan]] [bold white]Quantidade de dinheiro do usuário: [/bold white]{client.data_account.money}")
                     login = True
                    
                 except Exception as err:
@@ -379,49 +386,4 @@ def menu():
                         'account_username': account_username,
                         'item': 'delete'
                     }
-                    response = requests.post(f"{url}/buy_item", json=data)
-                    if response.status_code == 200:
-                        confirm = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite 'confirmar' para excluir a conta[/bold white] >> ")
-                        if confirm == 'confirmar':
-                            try:
-                                client.delete_account()
-                                console.print(" [[bold cyan]![/bold cyan]][bold white] Conta deletada![/bold white]")
-                                sleep(2)
-                                menu()
-                            except Exception as err:
-                                console.print(f" [[bold cyan]![/bold cyan]][bold white] Não foi possivel excluir a conta: {err}")
-                                sleep(2)
-                                menu()
-                        else:
-                            console.print(" [[bold cyan]![/bold cyan]][bold white] Você não confirmou a exclusão de conta![/bold white]")
-                            sleep(2)
-                            menu()
-                        
-                    elif response.status_code == 404:
-                        console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel liberar as animações![/bold white]")
-                        sleep(2)
-                        menu()
-                    elif response.status_code == 500:
-                        console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
-                        sleep(2)
-                        menu()
-                    elif response.status_code == 403:
-                        console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
-                        sleep(2)
-                        menu()
-            else:
-                console.print(" [[bold cyan]![/bold cyan]][bold white] Digite um número válido!")
-                sleep(2)
-                menu()
-        elif response.status_code == 500:
-            console.print(f" [[bold cyan]![/bold cyan]][bold white]Erro ao se conectar com o db: {response.json().get('message')}[/bold white]")
-            pause()
-            start()
-        elif response.status_code == 404:
-            console.print(f" [[bold cyan]![/bold cyan]][bold white]Não foi possivel acessar suas informações![/bold white]")
-            pause()
-            start()
-    except Exception as err:
-        console.print(f" [[bold cyan]![/bold cyan]] Erro: {err}")
-if __name__ == "__main__":
-    start()
+                    response = requests.post(f"{url}/buy_ite
