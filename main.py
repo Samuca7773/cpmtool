@@ -386,4 +386,244 @@ def menu():
                         'account_username': account_username,
                         'item': 'delete'
                     }
-                    response = requests.post(f"{url}/buy_ite
+                    response = requests.post(f"{url}/buy_item", json=data)
+                    if response.status_code == 200:
+                        confirm = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite 'confirmar' para excluir a conta[/bold white] >> ")
+                        if confirm == 'confirmar':
+                            try:
+                                client.delete_account()
+                                console.print(" [[bold cyan]![/bold cyan]][bold white] Conta deletada![/bold white]")
+                                sleep(2)
+                                menu()
+                            except Exception as err:
+                                console.print(f" [[bold cyan]![/bold cyan]][bold white] Não foi possivel excluir a conta: {err}")
+                                sleep(2)
+                                menu()
+                        else:
+                            console.print(" [[bold cyan]![/bold cyan]][bold white] Você não confirmou a exclusão de conta![/bold white]")
+                            sleep(2)
+                            menu()
+                        
+                    elif response.status_code == 404:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel liberar as animações![/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response.status_code == 500:
+                        console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response.status_code == 403:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
+                        sleep(2)
+                        menu()
+            
+            # Liberar Rodas
+            elif service == "7":
+                base_url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key\u003dAIzaSyBW1ZbMiUeDZHYUO2bY8Bfnf5rRgrQGPTM"
+                account_email = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite seu email[/bold white] >> ")
+                account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
+                data = {
+                    "email": account_email,
+                    "password": account_password,
+                    "returnSecureToken": True
+                }
+                headers = {
+                    "Content-Type": "application/json",
+                    "Accept-Language": "pt-BR, en-US"
+                }
+                response = requests.post(base_url, headers=headers, json=data)
+                login = False
+                if response.status_code == 400:
+                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Erro: Email ou senha inválidos[/bold white]")
+                    sleep(2)
+                    menu()
+                else:
+                    login = True
+                    data_buy = {
+                        'account_username': account_username,
+                        'item': 'wheels'
+                    }
+                    response_buy = requests.post(f"{url}/buy_item", json=data_buy)
+                    if response_buy.status_code == 404:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel liberar as rodas![/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 500:
+                        console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 403:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 200:
+                        
+                        data = response.json()
+                        idToken = data.get("idToken")
+                        save_url = "https://us-central1-cp-multiplayer.cloudfunctions.net/SavePlayerRecordsPartially5"
+                        headers_save = {
+                            "Host": "us-central1-cp-multiplayer.cloudfunctions.net",
+                            "Authorization": f"Bearer {idToken}",
+                            "Content-Type": "application/json",
+                            "User-Agent": "okhttp/3.12.13"
+                        }
+                        data_save = {
+                            "data": "{\"wheels\":[118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210]}"
+                        }
+                        response = requests.post(save_url, headers=headers_save, json=data_save)
+                        if response.status_code == 200:
+                            console.print(" [[bold cyan]![/bold cyan]] [bold white]Rodas liberadas![/bold white]")
+                            sleep(2)
+                            menu()
+                        else:
+                            console.print(" [[bold cyan]![/bold cyan]] [bold white]Não foi possivel liberar as rodas![/bold white]")
+                            sleep(2)
+                            menu()
+                           
+            # Nome grande
+            elif service == '8':
+                base_url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key\u003dAIzaSyBW1ZbMiUeDZHYUO2bY8Bfnf5rRgrQGPTM"
+                account_email = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite seu email[/bold white] >> ")
+                account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
+                new_name = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite o novo nome[/bold white] >> ")
+                data = {
+                    "email": account_email,
+                    "password": account_password,
+                    'returnSecureToken': True
+                }
+                headers = {
+                    "Content-Type": "application/json",
+                    "Accept-Language": "pt-BR, en-US"
+                }
+                response = requests.post(base_url, json=data, headers=headers)
+                login = False
+                if response.status_code == 400:
+                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Erro: Email ou senha inválidos[/bold white]")
+                    sleep(2)
+                    menu()
+                    
+                else:
+                    login = True
+                    data_buy = {
+                        'account_username': account_username,
+                        'item': 'name_raimbow'
+                    }
+                    response_buy = requests.post(f"{url}/buy_item", json=data_buy)
+                    if response_buy.status_code == 404:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel alterar o nome![/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 500:
+                        console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 403:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
+                        sleep(2)
+                        menu()
+                    
+                    elif response_buy.status_code == 200:
+                        data = response.json()
+                        idToken = data.get("idToken")
+                        save_url = "https://us-central1-cp-multiplayer.cloudfunctions.net/SavePlayerRecordsPartially5"
+                        headers_save = {
+                            "Host": "us-central1-cp-multiplayer.cloudfunctions.net",
+                            "Authorization": f"Bearer {idToken}",
+                            "Content-Type": "application/json",
+                            "User-Agent": "okhttp/3.12.13"
+                        }
+                        data = {
+                            "data": "{\"Name\":\"" + new_name + "\"}"
+                        }
+                        response = requests.post(save_url, headers=headers_save, json=data)
+                        if response.status_code == 200:
+                        
+                            console.print(" [[bold cyan]![/bold cyan]] [bold white]Nome alterado![/bold white]")
+                            sleep(2)
+                            menu()
+                        else:
+                            console.print(" [[bold cyan]![/bold cyan]] [bold white]Não foi possivel alterar o nome![/bold white]")
+                            sleep(2)
+                            menu()
+            
+            # ID Personalizado
+            elif service == "9":
+
+                base_url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key\u003dAIzaSyBW1ZbMiUeDZHYUO2bY8Bfnf5rRgrQGPTM"
+                account_email = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite seu email[/bold white] >> ")
+                account_password = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite sua senha[/bold white] >> ")
+                new_id = console.input(" [[bold cyan]?[/bold cyan]][bold white] Digite o novo ID[/bold white] >> ")
+                data = {
+                    "email": account_email,
+                    "password": account_password,
+                    'returnSecureToken': True
+                }
+                headers = {
+                    "Content-Type": "application/json",
+                    "Accept-Language": "pt-BR, en-US"
+                }
+                response = requests.post(base_url, json=data, headers=headers)
+                login = False
+                if response.status_code == 400:
+                    console.print(" [[bold cyan]?[/bold cyan]][bold white] Erro: Email ou senha inválidos[/bold white]")
+                    sleep(2)
+                    menu()
+                    
+                else:
+                    login = True
+                    data_buy = {
+                        'account_username': account_username,
+                        'item': 'localid'
+                    }
+                    response_buy = requests.post(f"{url}/buy_item", json=data_buy)
+                    if response_buy.status_code == 404:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Não foi possivel alterar o ID![/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 500:
+                        console.print(f" [[bold cyan]?[/bold cyan]][bold white]Erro: {response.json().get('message')}[/bold white]")
+                        sleep(2)
+                        menu()
+                    elif response_buy.status_code == 403:
+                        console.print(" [[bold cyan]![/bold cyan]][bold white] Saldo insuficiente![/bold white]")
+                        sleep(2)
+                        menu()
+                    
+                    elif response_buy.status_code == 200:
+                        data = response.json()
+                        idToken = data.get("idToken")
+                        save_url = "https://us-central1-cp-multiplayer.cloudfunctions.net/SavePlayerRecordsPartially5"
+                        headers_save = {
+                            "Host": "us-central1-cp-multiplayer.cloudfunctions.net",
+                            "Authorization": f"Bearer {idToken}",
+                            "Content-Type": "application/json",
+                            "User-Agent": "okhttp/3.12.13"
+                        }
+                        data = {
+                            "data": "{\"localID\":\"" + new_id + "\"}"
+                        }
+                        response = requests.post(save_url, headers=headers_save, json=data)
+                        if response.status_code == 200:
+                        
+                            console.print(" [[bold cyan]![/bold cyan]] [bold white]ID alterado![/bold white]")
+                            sleep(2)
+                            menu()
+                        else:
+                            console.print(" [[bold cyan]![/bold cyan]] [bold white]Não foi possivel alterar o ID![/bold white]")
+                            sleep(2)
+                            menu()
+                            
+        
+        
+        elif response.status_code == 500:
+            console.print(f" [[bold cyan]![/bold cyan]][bold white]Erro ao se conectar com o db: {response.json().get('message')}[/bold white]")
+            pause()
+            start()
+        elif response.status_code == 404:
+            console.print(f" [[bold cyan]![/bold cyan]][bold white]Não foi possivel acessar suas informações![/bold white]")
+            pause()
+            start()
+    except Exception as err:
+        console.print(f" [[bold cyan]![/bold cyan]] Erro: {err}")
+if __name__ == "__main__":
+    start()
